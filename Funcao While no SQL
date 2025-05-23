@@ -1,0 +1,160 @@
+--Aula 32
+--WHILE
+----------------------------------------------
+use
+SQL_Curso_1
+go
+
+drop  table tTEMP
+
+
+select *   
+into tTEMP
+
+from  Alunos
+
+select *  from tTEMP
+
+
+-------Exemplo  1
+
+declare @vString varchar(100)----Variavel com 100 carecteres
+set @vString = 'SQL       Server    |'---- Atribuir o  valor  pode ser  um texto  numero, text, objeto
+while CHARINDEX('  ', @vString )> 0
+begin
+set @vString = REPLACE(@vString, '  ', '')
+
+end 
+
+select @vString
+
+----- Exemplo  2
+
+
+declare @vVerdade  varchar (200)
+
+set @vVerdade =  'Melhor   canal     |'
+
+while  CHARINDEX('  ', @vVerdade)> 0
+begin
+set @vVerdade =  REPLACE(@vVerdade, '  ', '')
+
+end  
+
+select @vVerdade
+
+
+------  Voce  crir outro   exemplo  da  sua casa  se baseado  noe xemplo  1  e 2 ?
+
+------ exemplo 4
+
+
+declare @vCont  int 
+set @vCont = 1
+
+while  @vCont <= 10
+
+begin
+Print  ' O  contador   esta  em  :  '  +  convert(varchar,@vCont) 
+set @vCont = @vCont +1
+
+
+end 
+
+-----  exemplo  5  
+declare @vJogo   int 
+set @vJogo = 5
+
+while @vJogo <= 20
+
+begin
+Print ' O  Jogo  ´é  ; '  +   convert(varchar, @vJogo)
+set @vJogo =  @vJogo + 1
+end
+
+
+----- Exemplo  6
+
+declare @vCont1 int
+
+set  @vCont1 = 1
+
+while (@vCont1 <= 10)
+
+begin
+Print ' o Contador  esta   em  :  '  +   convert(varchar, @vCont1)
+
+if @vCont1 =  7 
+break
+set @vCont1 =  @vCont1 +1
+
+
+end
+
+---- Esta  tranquilo  pra  vc?
+
+-----  Licao  de  casa   tente  criar   um  exmeplom  sozinho?
+
+----- exemplo 7
+
+
+declare @Contadorr int
+set @Contadorr =  1
+
+while  (@Contadorr <= 17)
+
+begin
+if  @Contadorr % 2 = 0
+begin
+
+set @Contadorr =  @Contadorr + 1
+ continue
+  end 
+ Print' o  Valor  é   :  ' +  convert(varchar, @Contadorr)
+ set  @Contadorr = @Contadorr + 1
+end
+
+
+drop  table  tTEMP
+
+------ Tabela  de   registros
+
+SELECT x.*
+  INTO tTemp 
+  FROM (
+		 select row_number() over(order by id_aluno) linha, 
+		        y.id_aluno, y.nome, y.nome_curso, y.data_inicio, y.data_termino 
+		   from (
+				 select  a.id_aluno, a.nome, c.nome_curso, t.data_inicio, t.data_termino
+					from alunosxturmas at
+						 inner join turmas t on (t.id_turma = at.id_turma)
+						 inner join cursos c on (c.id_curso = t.id_curso)
+ 						 inner join alunos a on (a.id_aluno = at.id_aluno)
+				 ) y
+	   ) x
+
+
+
+declare @Contador int----
+declare  @MaxLinhas int
+declare @CursoProcura   nvarchar(100)
+declare @CursoNOme  nvarchar(100)
+declare @NomeAluno  nvarchar(100)
+
+set  @CursoProcura = 'Word'
+select  @Contador = MIN(linha),@MaxLinhas = MAX(linha) from tTemp
+
+ while  (@Contador is  not  null and  @Contador  < = @MaxLinhas)
+
+ begin
+   select @CursoNOme = nome_curso, @NomeAluno = nome
+
+   from  tTemp
+   where linha = @Contador
+
+   if  CHARINDEX(@CursoProcura, @CursoNOme)>0
+    print  convert(varchar, @Contador) + '> Curso' + @CursoNOme + ' Alunos ; ' + @NomeAluno
+	set @Contador = @Contador +1
+ end
+
+ drop  table  tTemp
